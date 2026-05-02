@@ -19,10 +19,16 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '17'
-          cache: 'gradle'
 
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v2
+      - name: Setup Gradle
+        uses: gradle/wrapper-validation-action@v1
+
+      - name: Download Gradle Wrapper
+        run: |
+          mkdir -p android/gradle/wrapper
+          wget -q https://services.gradle.org/distributions/gradle-8.6-bin.zip -O /tmp/gradle.zip
+          unzip -q /tmp/gradle.zip -d /tmp
+          /tmp/gradle-8.6/bin/gradle -p android wrapper
 
       - name: Build debug APK
         working-directory: android
