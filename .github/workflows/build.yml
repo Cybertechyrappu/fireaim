@@ -14,17 +14,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: |
-          npm install --legacy-peer-deps --no-audit
-          npm install --legacy-peer-deps --no-audit --prefix android
-
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
@@ -48,9 +37,3 @@ jobs:
         with:
           name: fireaim-release-apk
           path: android/app/build/outputs/apk/release/app-release.apk
-
-      - name: Upload debug APK artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: fireaim-debug-apk
-          path: android/app/build/outputs/apk/debug/app-debug.apk
