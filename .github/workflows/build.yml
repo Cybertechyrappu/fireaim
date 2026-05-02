@@ -1,0 +1,54 @@
+name: Build Fireaim Android
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  build-android:
+    name: Build Android APK
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'gradle'
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v2
+
+      - name: Build debug APK
+        working-directory: android
+        run: ./gradlew assembleDebug
+
+      - name: Build release APK
+        working-directory: android
+        run: ./gradlew assembleRelease
+
+      - name: Upload APK artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: fireaim-release-apk
+          path: android/app/build/outputs/apk/release/app-release.apk
+
+      - name: Upload debug APK artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: fireaim-debug-apk
+          path: android/app/build/outputs/apk/debug/app-debug.apk
